@@ -1,16 +1,14 @@
 from fastapi import FastAPI
 import psycopg2
+import json
+import os
 
 app = FastAPI()
 
-# database params
-conn_params = {
-    'dbname': 'shop',
-    'user': 'postgres',
-    'password': 'qQ7539518462',
-    'host': 'localhost',
-    'port': '5432'    
-}
+# Read database connection parameters from config file
+config_path = os.path.join(os.path.dirname(__file__), '..', 'config', 'database_config.json')
+with open(config_path, 'r') as config_file:
+    conn_params = json.load(config_file)
 
 # connect
 try:
