@@ -1,31 +1,18 @@
 from fastapi import FastAPI
-import psycopg2
-import json
-import os
+from app.db.session import engine, Base
+from app.api.v1.endpoints import product
 
 app = FastAPI()
 
-# Read database connection parameters from config file
-config_path = os.path.join(os.path.dirname(__file__), '..', 'config', 'database_config.json')
-with open(config_path, 'r') as config_file:
-    conn_params = json.load(config_file)
+# create tables
+Base.metadata.create_all(bind=engine)
 
-# connect
-try:
-    conn = psycopg2.connect(**conn_params)
-    cursor = conn.cursor()
 
-    # execute
-    cursor.execute('SELECT version();')
-    db_version = cursor.fetchone()
-    print(f'PostgreSQL database version: {db_version}')
-
-    # close
-    cursor.close()
-    conn.close()
-except Exception as e:
-    print(f'Error: {e}')
-    
+# root route
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
+
+
+# include routers
+app.include_router(product.router, prefix="/products", tags=["products"])
