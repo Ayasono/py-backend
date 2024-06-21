@@ -15,4 +15,5 @@ def read_root():
 
 
 # include routers
-app.include_router(product.router, prefix="/products", tags=["products"])
+common_prefix = "/api/v1"
+app.include_router(product.router, prefix=f'{common_prefix}/products', tags=["products"])
