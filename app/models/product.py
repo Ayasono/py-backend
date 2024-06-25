@@ -1,8 +1,8 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, String
 from app.db.session import Base
 
 
 class Product(Base):
     __tablename__ = 'products'
-    sku = Column(Integer, primary_key=True, index=True)
+    sku = Column(String, primary_key=True, index=True)
     name = Column(String, index=True)

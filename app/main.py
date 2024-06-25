@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from app.db.session import engine, Base
 from app.api.v1.endpoints import product
+from app.uitils.response_base.response_base import ResponseBase
 
 app = FastAPI()
 
@@ -11,7 +12,8 @@ Base.metadata.create_all(bind=engine)
 # root route
 @app.get("/")
 def read_root():
-    return {"Hello": "World"}
+    res = ResponseBase(code=200, message="Hello World")
+    return res
 
 
 # include routers
