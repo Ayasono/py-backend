@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from app.db.session import engine, Base
 from app.api.v1.endpoints import product
-from app.uitils.response_base.response_base import ResponseBase
+from app.schemas.response_base.response_base import ResponseBase
 
 app = FastAPI()
 

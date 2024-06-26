@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.models.product import Product
 from app.db.session import get_db
-from app.uitils.response_base.response_base import ResponseBase
+from app.schemas.response_base.response_base import ResponseBase
 
 router = APIRouter()
 
@@ -10,7 +10,8 @@ router = APIRouter()
 @router.get("/")
 def read_products(db: Session = Depends(get_db)):
     products = db.query(Product).all()
-    return products
+    products_data = [[product.sku, product.name] for product in products]
+    return ResponseBase(code=200, message="ok", data=products_data)
 
 
 @router.post("/")
