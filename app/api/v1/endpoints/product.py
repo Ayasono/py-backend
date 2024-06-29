@@ -10,7 +10,16 @@ router = APIRouter()
 @router.get("/")
 async def read_products(db: Session = Depends(get_db)):
     products = db.query(Product).all()
-    products_data = [[product.sku, product.name] for product in products]
+    products_data = [
+        {
+            "sku": product.sku,
+            "name": product.name,
+            "price": product.price,
+            "stock": product.stock,
+            "description": product.description
+        }
+        for product in products
+    ]
     return ResponseBase(code=200, message="ok", data=products_data)
 
 
