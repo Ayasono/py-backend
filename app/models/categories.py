@@ -5,9 +5,9 @@ from sqlalchemy import Column, String, Integer
 class Categories(Base):
     __tablename__ = 'categories'
 
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, index=True)
+    name = Column(String, primary_key=True, index=True)
     description = Column(String)
+    id = Column(Integer, index=True)
 
     class Config:
         orm_mode = True
