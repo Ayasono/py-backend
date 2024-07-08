@@ -13,7 +13,6 @@ async def read_categories(db: Session = Depends(get_db)):
     categories = db.query(Categories).all()
     categories_data = [
         {
-            "id": category.id,
             "name": category.name,
             "description": category.description
         }

@@ -7,7 +7,6 @@ class Categories(Base):
 
     name = Column(String, primary_key=True, index=True)
     description = Column(String)
-    id = Column(Integer, index=True)
 
     class Config:
         orm_mode = True
