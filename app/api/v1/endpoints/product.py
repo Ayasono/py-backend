@@ -3,24 +3,36 @@ from sqlalchemy.orm import Session
 from app.models.product import Product
 from app.db.session import get_db
 from app.schemas.response_base.response_base import ResponseBase
+from typing import List, Union
+from pydantic import BaseModel
 
 router = APIRouter()
 
 
-@router.get("/")
+class ProductResponse(BaseModel):
+    name: str
+    description: str
+    stock: int
+    price: float
+    sku: str
+    category: str
+
+    class Config:
+        from_attributes = True
+
+
+class ProductListResponse(ResponseBase):
+    data: Union[List[ProductResponse], None]
+
+
+@router.get("/", response_model=ProductListResponse, description="Get all products")
 async def read_products(db: Session = Depends(get_db)):
     products = db.query(Product).all()
-    products_data = [
-        {
-            "sku": product.sku,
-            "name": product.name,
-            "price": product.price,
-            "stock": product.stock,
-            "description": product.description
-        }
-        for product in products
-    ]
-    return ResponseBase(code=200, message="ok", data=products_data)
+    return {
+        "code": 200,
+        "message": "ok",
+        "data": products
+    }
 
 
 @router.get("/item/{sku}")
