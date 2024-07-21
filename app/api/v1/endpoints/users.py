@@ -1,20 +1,47 @@
 from app.models.users import Users
 from app.db.session import get_db
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from app.schemas.response_base.response_base import ResponseBase
+from pydantic import BaseModel
+from typing import List
 
 userRouter = APIRouter()
 
 
-@userRouter.get("/")
+class UsersInfor(BaseModel):
+    name: str
+    email: str
+    role: str
+
+
+class UserResponse(ResponseBase):
+    data: List[UsersInfor]
+
+    class Config:
+        from_attributes = True
+
+
+@userRouter.get("/", response_model=UserResponse, description="Get all users")
 async def read_users(db=Depends(get_db)):
     users = db.query(Users).all()
-    users_data = [
-        {
-            "name": user.name,
-            "email": user.email,
-            "role": user.role
-        }
-        for user in users
-    ]
-    return ResponseBase(code=200, message="ok", data=users_data)
+
+    return ResponseBase(code=200, message="ok", data=users)
+
+
+class DeleteUserResponse(ResponseBase):
+    data: UsersInfor
+
+    class Config:
+        from_attributes = True
+
+
+@userRouter.delete("/{email}", response_model=DeleteUserResponse, description="Delete user by id")
+async def delete_user(email: str, db=Depends(get_db)):
+    user = db.query(Users).filter(Users.email == email).first()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    else:
+        db.delete(user)
+        db.commit()
+        return ResponseBase(code=200, message="User deleted", data=user)
