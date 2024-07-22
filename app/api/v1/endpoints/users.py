@@ -28,6 +28,24 @@ async def read_users(db=Depends(get_db)):
     return ResponseBase(code=200, message="ok", data=users)
 
 
+class CreateUserRequestBody(BaseModel):
+    name: str
+    email: str
+    password: str
+    role: str
+    address: str
+    phone: str
+
+
+@userRouter.post("/", response_model=ResponseBase, description="Create new user")
+async def create_user(user: UsersInfor, db=Depends(get_db)):
+    new_user = Users(name=user.name, email=user.email, role=user.role)
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return ResponseBase(code=200, message="User created", data=new_user)
+
+
 class DeleteUserResponse(ResponseBase):
     data: UsersInfor
 
