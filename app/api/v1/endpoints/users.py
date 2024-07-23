@@ -3,19 +3,19 @@ from app.db.session import get_db
 from fastapi import APIRouter, Depends, HTTPException
 from app.schemas.response_base.response_base import ResponseBase
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 
 userRouter = APIRouter()
 
 
-class UsersInfor(BaseModel):
+class UsersInfo(BaseModel):
     name: str
     email: str
     role: str
 
 
 class UserResponse(ResponseBase):
-    data: List[UsersInfor]
+    data: List[UsersInfo]
 
     class Config:
         from_attributes = True
@@ -32,22 +32,33 @@ class CreateUserRequestBody(BaseModel):
     name: str
     email: str
     password: str
-    role: str
-    address: str
-    phone: str
+    role: Optional[str] = "user"
+    address: Optional[str] = ""
+    phone:  Optional[str] = ""
 
 
-@userRouter.post("/", response_model=ResponseBase, description="Create new user")
-async def create_user(user: UsersInfor, db=Depends(get_db)):
-    new_user = Users(name=user.name, email=user.email, role=user.role)
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-    return ResponseBase(code=200, message="User created", data=new_user)
+class CreateUserResponse(ResponseBase):
+    data: CreateUserRequestBody
+
+    class Config:
+        from_attributes = True
+
+
+@userRouter.post("/", response_model=CreateUserResponse, description="Create new user")
+async def create_user(user: CreateUserRequestBody, db=Depends(get_db)):
+    new_user = Users(name=user.name, email=user.email, role=user.role, address=user.address, phone=user.phone,
+                     password=user.password)
+    try:
+        db.add(new_user)
+        db.commit()
+        db.refresh(new_user)
+        return ResponseBase(code=200, message="User created", data=new_user)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed to create user: {e}")
 
 
 class DeleteUserResponse(ResponseBase):
-    data: UsersInfor
+    data: UsersInfo
 
     class Config:
         from_attributes = True
