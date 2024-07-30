@@ -11,6 +11,3 @@ class Product(Base):
     price = Column(DECIMAL(10, 2))
     stock = Column(Integer)
     category = Column(String, ForeignKey('categories.name'))
-
-    class Config:
-        orm_mode = True

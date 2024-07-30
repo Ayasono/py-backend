@@ -19,6 +19,3 @@ class Users(Base):
     address = Column(String)
     phone = Column(String)
     role = Column(Enum(UsersEnum), default=UsersEnum.user, nullable=False)
-
-    class Config:
-        orm_mode = True
