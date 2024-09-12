@@ -3,6 +3,7 @@ from app.db.session import engine, Base
 from app.api.v1.endpoints import product
 from app.api.v1.endpoints import categories
 from app.api.v1.endpoints import users
+from app.api.v1.endpoints import orders
 from app.schemas.response_base.response_base import ResponseBase
 
 app = FastAPI()
@@ -23,3 +24,4 @@ common_prefix = "/api/v1"
 app.include_router(product.router, prefix=f'{common_prefix}/products', tags=["products"])
 app.include_router(categories.router, prefix=f'{common_prefix}/categories', tags=["categories"])
 app.include_router(users.userRouter, prefix=f'{common_prefix}/users', tags=["users"])
+app.include_router(orders.router, prefix=f'{common_prefix}/orders', tags=["orders"])
