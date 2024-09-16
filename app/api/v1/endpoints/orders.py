@@ -4,54 +4,14 @@ from app.db.session import get_db
 from app.models.orders import Orders
 from app.models.order_details import OrderDetails
 from app.models.product import Product
-from app.schemas.response_base.response_base import ResponseBase
-from pydantic import BaseModel, ConfigDict
-from typing import List, Optional
+from app.schemas.orders.order_schemas import (
+    CreateOrderRequest,
+    CreateOrderResponse,
+    OrderResponse
+)
 from datetime import datetime
 
 router = APIRouter()
-
-
-class OrderItem(BaseModel):
-    sku: str
-    quantity: int
-
-
-class CreateOrderRequest(BaseModel):
-    customer_id: int
-    items: List[OrderItem]
-
-
-class OrderDetailBase(BaseModel):
-    order_id: str
-    sku: str
-    quantity: int
-    original_price: float
-    total: float
-
-    model_config = ConfigDict(from_attributes=True)
-
-
-class OrderBase(BaseModel):
-    order_id: str
-    customer_id: int
-    order_date: datetime
-    ship_date: Optional[datetime]
-    ship_carrier: Optional[str]
-    shipping_cost: float
-    total_amount: float
-    order_details: List[OrderDetailBase] = []
-
-    model_config = ConfigDict(from_attributes=True)
-
-
-class OrderResponse(ResponseBase):
-    data: List[OrderBase]
-
-
-class CreateOrderResponse(ResponseBase):
-    data: OrderBase
-
 
 # Routes
 @router.post("/", response_model=CreateOrderResponse, description="Create a new order")
