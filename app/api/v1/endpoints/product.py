@@ -3,39 +3,10 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 from app.models.product import Product
 from app.db.session import get_db
-from app.schemas.response_base.response_base import ResponseBase
-from typing import List
-from pydantic import BaseModel, Field
+from app.schemas.product.product_schema import ProductBase, ProductResponse, ProductListResponse, \
+    ProductCreateRequestBody, CreateProductResponse
 
 router = APIRouter()
-
-
-class ProductBase(BaseModel):
-    name: str = Field(..., example="iPhone 12")
-    description: str = Field(..., example="Latest iPhone model")
-    stock: int = Field(..., ge=0, example=100)
-    price: float = Field(..., gt=0, example=999.99)
-    sku: str = Field(..., example="IPHONE12-64GB-BLACK")
-    category: str = Field(..., example="Electronics")
-
-    class Config:
-        from_attributes = True
-
-
-class ProductResponse(ProductBase):
-    pass
-
-
-class ProductListResponse(ResponseBase):
-    data: List[ProductResponse] = Field(default_factory=list)
-
-
-class ProductCreateRequestBody(ProductBase):
-    pass
-
-
-class CreateProductResponse(ResponseBase):
-    data: ProductResponse
 
 
 @router.get("/", response_model=ProductListResponse, description="Get all products")
