@@ -1,5 +1,8 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, DECIMAL
+from sqlalchemy.orm import relationship
+
 from app.db.session import Base
+
 
 class OrderDetails(Base):
     __tablename__ = 'order_details'
@@ -10,3 +13,5 @@ class OrderDetails(Base):
     quantity = Column(Integer, nullable=False)
     original_price = Column(DECIMAL(10, 2), nullable=False)
     total = Column(DECIMAL(10, 2), nullable=False)
+
+    order = relationship('Orders', back_populates='order_details')
