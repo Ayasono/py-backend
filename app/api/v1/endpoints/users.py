@@ -3,9 +3,9 @@ from app.db.session import get_db
 from fastapi import APIRouter, Depends, HTTPException
 from app.schemas.response_base.response_base import ResponseBase
 from pydantic import BaseModel
-from app.schemas.user_responses.get_user import UserResponse
-from app.schemas.user_responses.delete_user import DeleteUserResponse
-from app.schemas.user_responses.create_user import CreateUserResponse
+from app.schemas.user_responses.get_user_schema import UserResponse
+from app.schemas.user_responses.delete_user_schema import DeleteUserResponse
+from app.schemas.user_responses.create_user_schema import CreateUserResponse
 from typing import Optional
 from sqlalchemy.orm import Session
 
