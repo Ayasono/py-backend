@@ -3,6 +3,9 @@ name = "fastapi-project"
 version = "0.1.0"
 description = "this is for practice"
 authors = ["ayasono"]
+packages = [
+  { include = "app" }
+]
 
 [tool.poetry.dependencies]
 python = "^3.12"
